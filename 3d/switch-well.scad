@@ -67,10 +67,14 @@ module choc_well () {
             cylinder(BOTTOM_WALL+1+EPS, r=2.90/2+RTOL);
             %box ([4.55, 5, 1.85], [1,1,2]);
         }
+        // Diode groove
+        for (y=[1, -1]) translate ([-1.5, BOX_SZ_Y/2*y, 0]) rotate ([0, 90, 0]) scale ([2, 1, 1]) {
+            cylinder (5, r=.5);
+        }
         /* // LED hole
         translate ([-4.70, 0, -1]) box ([2.8+TOL, 3.2+TOL, INF]);
         translate ([-4.70, 0, -1]) box ([2.8+TOL, 5.9+TOL, 1+BOTTOM_WALL-.5], [1, 1, 0]);
-        */
+        //*/
     }
     %choc_skeleton ();
     // Clip for wires
@@ -103,7 +107,7 @@ module choc_well () {
         }
     }
     // Clip for diode wire
-    scale ([1, 1, -1]) translate ([-1.75, BOX_SZ_Y/2, 0]) {
+    scale ([1, 1, -1]) translate ([-2, BOX_SZ_Y/2-.5, 0]) {
         difference () {
             hull () {
                 translate ([-1, 0, 0]) box ([WIRE_ORG_T+DIODEW_R+2, 1, EPS], [0, 2, 0]);
