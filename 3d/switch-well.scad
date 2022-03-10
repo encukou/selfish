@@ -3,8 +3,9 @@ CHOC_SPACING_Y = 17;
 CHOC_SZ = 13.80;
 CHOC_FULL_SZ = 15.00;
 CHOC_H = 2.20;
+WELL_ANGLE = 20;
 
-BOX_SZ_X = 16;
+BOX_SZ_X = 15;
 BOX_SZ_Y = 16;
 
 CAP_SZ = 17;
@@ -27,6 +28,8 @@ EPS = 0.01;
 
 $fn = 50;
 
+WALL_H = CHOC_H+BOTTOM_WALL;
+
 module box (sizes, centering=[1, 1, 1], extra_negative=[0, 0, 0]) {
     translate ([
         -sizes[0]*centering[0]/2-extra_negative[0],
@@ -41,28 +44,29 @@ module box (sizes, centering=[1, 1, 1], extra_negative=[0, 0, 0]) {
     }
 }
 
-module choc_well () {
+module choc_well (pos=0) {
     difference () {
         union () {
-            box ([BOX_SZ_X, BOX_SZ_Y, CHOC_H+BOTTOM_WALL], [1, 1, 0]);
-            for (r=[0,180]) rotate (r, [0, 0, 1]) {
-                translate ([-BOX_SZ_X/2, 0, 0]) {
-                    box ([
-                        (BOX_SZ_X-CHOC_SZ-TOL)/2,
-                         CHOC_SPACING_Y,
-                         CHOC_H+BOTTOM_WALL
-                    ], [0, 1, 0]);
+            // Main body
+            box ([BOX_SZ_X, BOX_SZ_Y, WALL_H], [1, 1, 0]);
+            // Connectors between wells
+            for (x=[-1,1]) for (y=[-1,1]) if (y != pos) {
+                wall_sz = 1;
+                y_sz = 1;
+                translate ([x*(BOX_SZ_X/2-wall_sz/2), y*BOX_SZ_Y/2, 0]) {
+                    box ([wall_sz, y_sz, WALL_H], [1, 1, 0]);
                 }
             }
         }
+        // Main body cutout
         translate ([0, 0, BOTTOM_WALL]) {
             box ([CHOC_SZ+TOL, CHOC_SZ+TOL, INF], [1, 1, 0]);
         }
-        // Middle plastic pin
+        // Cutout for middle plastic pin of the keyswitch
         translate ([0, 0, -1]) cylinder(INF, r=3.20/2+RTOL);
-        // Side plastic pins
+        // Cutout for side plastic pins
         for (y=[-1,1]) translate ([0, y*11/2, -1]) cylinder(INF, r=1.80/2+RTOL);
-        // Contact pins
+        // Contact pins of the keyswitch
         for (xy=[[5.90, 0], [3.80, -5]]) translate ([xy[0], xy[1], -EPS]) {
             cylinder(BOTTOM_WALL+1+EPS, r=2.90/2+RTOL);
             %box ([4.55, 5, 1.85], [1,1,2]);
@@ -101,13 +105,18 @@ module choc_well () {
         difference () {
             hull () {
                 box ([WIRE_R*2+WIRE_ORG_T, WIRE_R*2+WIRE_ORG_T*3, EPS], [0, 1, 0]);
-                box ([WIRE_ORG_T, WIRE_R*2+WIRE_ORG_T*2, WIRE_R*2+TOL], [2, 1, 0]);
+                box ([WIRE_ORG_T, WIRE_R*2+WIRE_ORG_T*2, WIRE_R*3+TOL], [2, 1, 0]);
             }
-            translate ([-INF/2, 0, WIRE_R+TOL]) rotate (90, [0, 1, 0]) cylinder (INF, r=WIRE_R+RTOL);
+            translate ([-INF/2, 0, WIRE_R+TOL]) rotate (90, [0, 1, 0]){
+                hull () {
+                    cylinder (INF, r=WIRE_R+RTOL);
+                    translate ([-WIRE_R*2, 0, 0]) cylinder (INF, r=WIRE_R-RTOL);
+                }
+            }
         }
     }
     // Clip for diode wire
-    scale ([1, 1, -1]) translate ([-2, BOX_SZ_Y/2-.5, 0]) {
+    if (pos != 1) scale ([1, 1, -1]) translate ([-2, BOX_SZ_Y/2-.5, 0]) {
         difference () {
             hull () {
                 translate ([-1, 0, 0]) box ([WIRE_ORG_T+DIODEW_R+2, 1, EPS], [0, 2, 0]);
@@ -141,15 +150,10 @@ module choc_skeleton () {
     }
 }
 
-choc_well ();
-
-translate ([0, -CHOC_SPACING_Y+CHOC_SZ/2, 0]) rotate (-20, [1, 0, 0]) {
-    translate ([0, -CHOC_SZ/2, 0.6]) {
-        choc_well ();
-    }
-}
-translate ([0, CHOC_SPACING_Y-CHOC_SZ/2, 0]) rotate (20, [1, 0, 0]) {
-    translate ([0, CHOC_SZ/2, 0.6]) {
-        choc_well ();
+for (pos=[-1, 0, 1]) translate ([0, CHOC_SPACING_Y/2*pos, 0]) {
+    rotate ([WELL_ANGLE*pos, 0, 0]) {
+        translate ([0, CHOC_SPACING_Y/2*pos, 0]) {
+            choc_well (pos=pos);
+        }
     }
 }
