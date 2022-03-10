@@ -69,7 +69,10 @@ module choc_well (pos=0) {
         // Contact pins of the keyswitch
         for (xy=[[5.90, 0], [3.80, -5]]) translate ([xy[0], xy[1], -EPS]) {
             cylinder(BOTTOM_WALL+1+EPS, r=2.90/2+RTOL);
-            %box ([4.55, 5, 1.85], [1,1,2]);
+            %union () {
+                box ([4.55, 5, 1.85], [1,1,2]);
+                translate ([0, 0, 0]) box ([1.68, 5+2*1.6, 1.85], [1,1,2]);
+            }
         }
         // Diode groove
         for (y=[1, -1]) translate ([-1.5, BOX_SZ_Y/2*y, 0]) rotate ([0, 90, 0]) scale ([2, 1, 1]) {
@@ -150,10 +153,32 @@ module choc_skeleton () {
     }
 }
 
+module mount_pad (pos) {
+    //rotate ([pos < 0 ? 0 : -90, 0, 0]) translate ([0, pos < 0 ? 0 : 2.5, pos < 0 ? 0 : 1.5])
+    difference () {
+        thickness = 1.5;
+        hole_trans = [0, pos<0 ? 6 : 4, -thickness];
+        // Main body
+        hull () {
+            rotate ([WELL_ANGLE, 0, 0]) box ([BOX_SZ_X, EPS, thickness], [1, 1, 2]);
+            translate (hole_trans) cylinder (thickness, r=6/2);
+        }
+        // Screw hole
+        translate (hole_trans) {
+            cylinder (INF, r=3/2+RTOL, center=true);
+        }
+    }
+}
+
 for (pos=[-1, 0, 1]) translate ([0, CHOC_SPACING_Y/2*pos, 0]) {
     rotate ([WELL_ANGLE*pos, 0, 0]) {
         translate ([0, CHOC_SPACING_Y/2*pos, 0]) {
             choc_well (pos=pos);
+        }
+        if (pos != 0) translate ([0, BOX_SZ_Y*pos, WALL_H]) {
+            rotate ([-WELL_ANGLE*pos, 0, 0]) scale ([1, pos, 1]) {
+                mount_pad (pos=pos);
+            }
         }
     }
 }
