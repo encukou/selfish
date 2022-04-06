@@ -3,7 +3,7 @@ angle1 = 30;  // [20:30]
 // Lower row angle
 angle2 = 80;  // [20:95]
 // Middle row angle (i.e. mounting tab angle)
-TAB_ANGLE = 14.5; // [-60:60]
+TAB_ANGLE = 17.5; // [-60:60]
 
 assert (angle2 - TAB_ANGLE <= 95, "Middle row angle too negative");
 
@@ -73,9 +73,9 @@ module choc_well (pos=0, angle=0) translate ([0, 0, -KEY_DEPTH]) {
                         scale ([1, y, 1]) difference () {
                             $fn = $fn*5;
                             union () {
-                                cylinder (BOX_SZ_X/5, r=KEY_DEPTH);
-                                translate ([0, 0, BOX_SZ_X/5-EPS]) cylinder (
-                                    BOX_SZ_X/5,
+                                cylinder (BOX_SZ_X/6, r=KEY_DEPTH);
+                                translate ([0, 0, BOX_SZ_X/6-EPS]) cylinder (
+                                    BOX_SZ_X/6,
                                     r1=KEY_DEPTH,
                                     r2=KEY_DEPTH-WALL_H/2);
                                 cylinder (BOX_SZ_Y/2, r=KEY_DEPTH-WALL_H/2);
@@ -113,7 +113,7 @@ module choc_well (pos=0, angle=0) translate ([0, 0, -KEY_DEPTH]) {
         translate ([-4.70, 0, -1]) box ([2.8+TOL, 5.9+TOL, 1+BOTTOM_WALL-.5], [1, 1, 0]);
         //*/
     }
-    %choc_skeleton ();
+    //%choc_skeleton ();
     // Clip for wires
     positions = pos == 1 ? [0] : [BOX_SZ_Y/2-WIRE_ORG_W];
     scale ([1, 1, -1]) for (y=positions) translate ([-BOX_SZ_X/2, y, 0]) {
@@ -186,27 +186,31 @@ module choc_skeleton () {
     }
 }
 
-module mount_pad (pos, angle, prot) {
-    thickness = 1.5;
-    hole_trans = [0, pos<0 ? 6 : 8, -thickness];
-    ang = -angle*pos+TAB_ANGLE;
-    translate ([0, prot*pos, 0]) rotate ([ang, 0, 0]) scale ([1, pos, 1]) {
-        difference () {
-            // Main body
-            hull () {
-                rotate ([-ang*pos, 0, 0]) box ([BOX_SZ_X, EPS, thickness], [1, 1, 2]);
-                box ([BOX_SZ_X, EPS, thickness], [1, 1, 2]);
-                translate (hole_trans) cylinder (thickness, r=6/2);
-            }
-            // Screw hole
-            translate (hole_trans) {
-                cylinder (INF, r=SCREW_R+RTOL, center=true);
-            }
-        }
-        // Connection
+module mount_pad (pos, angle) scale ([1, pos, -1]) {
+    prot = 2;
+    ang = angle-TAB_ANGLE*pos;
+    hole_dist = 3;
+    hole_r = 3/2-TOL;
+    difference () {
+        box ([BOX_SZ_X, INF, WALL_H], [1, 0, 0]);
         hull () {
-            box ([BOX_SZ_X, EPS, thickness], [1, 1, 2]);
-            rotate ([-ang*pos, 0, 0]) box ([BOX_SZ_X, prot, thickness], [1, 2, 2]);
+            box ([BOX_SZ_X*2/6, INF, INF], [1, 0, 0], [0, 0, -1]);
+            translate ([0, 0, WALL_H-1]) box ([BOX_SZ_X*4/6, INF, INF], [1, 0, 0], [0, 0, -1]);
+        }
+        translate ([0, prot, 0]) rotate ([ang, 0, 0]) box ([INF, INF*3, INF*3], [1, 1, 2]);
+    }
+    translate ([0, prot, 0]) rotate ([ang-90, 0, 0]) {
+        top_prot = WALL_H/sin(ang);
+        difference () {
+            hull () {
+                box ([BOX_SZ_X, 1, top_prot], [1, 2, 0]);
+                translate ([0, 0, top_prot+hole_dist]) {
+                    rotate ([90, 0, 0]) cylinder (1, r=hole_dist);
+                }
+            }
+            translate ([0, EPS, top_prot+hole_dist]) {
+                rotate ([90, 0, 0]) cylinder (INF, r=hole_r);
+            }
         }
     }
 }
@@ -220,7 +224,7 @@ rotate ([-TAB_ANGLE, 0, 0]) for (pos=[-1, 0, 1]) translate ([0, CAP_SPACE/2*pos,
             choc_well (pos=pos, angle=angle);
         }
         if (pos != 0) translate ([0, (CAP_SPACE+1)*pos, -KEY_DEPTH+WALL_H]) {
-            mount_pad (pos=pos, angle=angle, prot=pos<0 ? 4*max(sin(TAB_ANGLE+angle),0) : 4*max(cos(TAB_ANGLE+angle),0));
+            mount_pad (pos=pos, angle=angle);
         }
     }
 }
