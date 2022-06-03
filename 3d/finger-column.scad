@@ -22,9 +22,6 @@ KEY_DEPTH = 10.5;
 BOX_SZ_X = 15;
 BOX_SZ_Y = 16;
 
-CAP_SZ = 17;
-CAP_CHAMF = 2;
-
 BOTTOM_WALL = 1;
 
 WIRE_R = .5;  // CHECK!
