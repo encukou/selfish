@@ -1,4 +1,4 @@
-20155907539415607
+20160874036269328
 Arduino
 Arduino_Micro
 Arduino Micro
@@ -57617,12 +57617,33 @@ Diode T-1 series Axial Horizontal pin pitch 5.08mm  length 3.2mm diameter 2.6mm
 2
 2
 Library
+Diode
+Diode
+Diode
+0
+2
+2
+Library
+Diode_SMD
+
+
+0
+2
+2
+Library
 PinHeader_1x05_P2.54mm_Vertical
 Through hole straight pin header, 1x05, 2.54mm pitch, single row
 Through hole pin header THT 1x05 2.54mm single row
 0
 5
 5
+Library
+PinSocket_1x04_P2.54mm_Vertical_LongPads
+Through hole straight socket strip, 1x04, 2.54mm pitch, single row (from Kicad 4.0.7), script generated
+Through hole socket strip THT 1x04 2.54mm single row
+0
+4
+4
 Module
 A20_OLINUXINO_LIME2
 A20 Olinuxino LIME2, 1.2GHz, 512-1024MB RAM, Micro-SD, NAND or eMMC, 1000Mbit Ethernet
