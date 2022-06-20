@@ -1,5 +1,0 @@
-(fp_lib_table
-  (lib (name "Arduino")(type "KiCad")(uri "/home/pviktori/dev/selfish/pcb/kicad-lib-arduino/Arduino.pretty")(options "")(descr ""))
-  (lib (name "Library")(type "KiCad")(uri "${KIPRJMOD}/Library.pretty")(options "")(descr ""))
-  (lib (name "3dmodels")(type "KiCad")(uri "/home/pviktori/dev/Keebio-Parts.pretty")(options "")(descr ""))
-)

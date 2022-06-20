@@ -1,4 +1,0 @@
-(sym_lib_table
-  (lib (name "Arduino")(type "Legacy")(uri "/home/pviktori/dev/selfish/pcb/kicad-lib-arduino/Arduino.lib")(options "")(descr ""))
-  (lib (name "keebio")(type "Legacy")(uri "/home/pviktori/dev/keebio-components/keebio.lib")(options "")(descr ""))
-)
