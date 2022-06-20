@@ -376,12 +376,12 @@
   },
   "pcbnew": {
     "last_paths": {
-      "gencad": "",
+      "gencad": "squeezebar.cad",
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
-      "vrml": ""
+      "step": "squeezebar.step",
+      "vrml": "squeezebar.wrl"
     },
     "page_layout_descr_file": ""
   },
