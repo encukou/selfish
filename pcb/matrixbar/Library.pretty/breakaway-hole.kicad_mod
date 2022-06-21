@@ -1,0 +1,14 @@
+(footprint "breakaway-hole" (version 20211014) (generator pcbnew)
+  (layer "F.Cu")
+  (tedit 5CDDCC9D)
+  (attr through_hole board_only)
+  (fp_text reference "REF**" (at 0 -2.794) (layer "Dwgs.User") hide
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp ade20d8f-3fe4-4d67-bb82-9c1a757921cd)
+  )
+  (fp_text value "breakaway-hole" (at 0 -4.496) (layer "F.Fab") hide
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 42dede3c-044c-45ca-933b-9b01a2d3a95f)
+  )
+  (pad "" np_thru_hole circle (at 0 0) (size 0.5 0.5) (drill 0.5) (layers *.Mask) (tstamp f6e4cc94-ce7b-4042-9565-e7757e57b3d4))
+)
